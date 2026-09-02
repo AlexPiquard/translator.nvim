@@ -1,0 +1,82 @@
+# translator.nvim
+
+Translate text directly from Neovim using a free public translation endpoint, with no API key and no dependency other than `curl`.
+
+## Features
+
+- Translates a visual selection, the command arguments, or prompted text
+- Optional yank of the result into the registers
+- Optional in-place replacement of the selection
+
+## Requirements
+
+- Neovim >= 0.10.0
+- `curl`
+
+## Installation
+
+### lazy.nvim
+
+```lua
+{
+  "AlexPiquard/translator.nvim",
+  -- Example keybindings
+  keys = {
+    { "<leader>tf", function()
+        require("translator").translate("fr", nil, { replace_selection = true, yank_output = false })
+      end, desc = "Translate selection to French, without yanking" },
+    { "<leader>te", "<cmd>Translate en<cr>", desc = "Translate to English" },
+  },
+  opts = {},
+}
+```
+
+### packer.nvim
+
+```lua
+use {
+  "AlexPiquard/translator.nvim",
+}
+```
+
+## Usage
+
+```
+:Translate <lang> [text]
+```
+
+`<lang>` is an [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) code (`fr`, `en`, `de`, ...). The source language is auto-detected.
+
+The text to translate comes from, in order:
+
+1. The command arguments
+2. An active visual selection
+3. A prompt (`vim.ui.input`)
+
+### Replace the selection
+
+```lua
+{
+  "AlexPiquard/translator.nvim",
+  opts = { replace_selection = true },
+}
+```
+
+Select some text and run `:Translate <lang>`: the selection is replaced by the translation. Characterwise and linewise selections are supported; block selections are ignored.
+
+## Configuration
+
+Defaults:
+
+```lua
+{
+  yank_output = true,        -- yank the translation into the registers
+  replace_selection = false, -- replace the visual selection with the translation
+  visual_input = true,       -- use the visual selection as the input text
+  notify_output = true,      -- print the translation as a notification
+}
+```
+
+## License
+
+[MIT](./LICENSE)
