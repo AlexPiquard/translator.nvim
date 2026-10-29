@@ -1,5 +1,5 @@
 *translator.txt*
-                        For Neovim >= 0.10.0    Last change: 2026 September 02
+                          For Neovim >= 0.10.0    Last change: 2026 October 29
 
 ==============================================================================
 Table of Contents                               *translator-table-of-contents*
