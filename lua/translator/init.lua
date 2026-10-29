@@ -23,7 +23,7 @@ local M = {
 M.setup = function(args)
     local new_config = vim.tbl_deep_extend("force", M.config, args or {})
     if not M.validate_config(new_config) then
-        error("translator: invalid config", 0)
+        error("Translator: Invalid config", 0)
     end
     M.config = new_config
 end

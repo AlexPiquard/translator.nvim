@@ -26,9 +26,10 @@ describe("translator.ui", function()
 
             local lines = replace_translated("HELLO", {
                 start_pos = { 0, 1, 1, 0 },
-                end_pos = { 0, 1, 5, 0 },
+                end_pos = { 0, 1, 6, 0 },
                 buf = buf,
                 mode = "v",
+                indent = "",
             })
 
             assert.are.same({ "HELLO world" }, lines)
@@ -43,6 +44,7 @@ describe("translator.ui", function()
                 end_pos = { 0, 2, 1, 0 },
                 buf = buf,
                 mode = "V",
+                indent = "",
             })
 
             assert.are.same({ "line one", "replaced", "line three" }, lines)
@@ -54,9 +56,10 @@ describe("translator.ui", function()
 
             local lines = replace_translated("RUTHLESS\nCRUEL", {
                 start_pos = { 0, 1, 7, 0 },
-                end_pos = { 0, 2, 13, 0 },
+                end_pos = { 0, 2, 14, 0 },
                 buf = buf,
                 mode = "v",
+                indent = ""
             })
 
             assert.are.same({ "hello RUTHLESS", "CRUEL moon" }, lines)
@@ -68,9 +71,10 @@ describe("translator.ui", function()
 
             local lines = replace_translated("TRANSLATED ONE\nTRANSLATED TWO", {
                 start_pos = { 0, 1, 1, 0 },
-                end_pos = { 0, 2, 18, 0 },
+                end_pos = { 0, 2, 19, 0 },
                 buf = buf,
                 mode = "v",
+                indent = ""
             })
 
             assert.are.same({ "TRANSLATED ONE", "TRANSLATED TWO" }, lines)
@@ -85,9 +89,40 @@ describe("translator.ui", function()
                 end_pos = { 0, 3, 1, 0 },
                 buf = buf,
                 mode = "V",
+                indent = ""
             })
 
             assert.are.same({ "line one", "alpha", "beta", "line four" }, lines)
+        end)
+
+        it("prepends tab indentation in linewise mode", function()
+            local buf = vim.api.nvim_create_buf(false, true)
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "\tline one", "\tline two" })
+
+            local lines = replace_translated("alpha\n\tbeta", {
+                start_pos = { 0, 1, 1, 0 },
+                end_pos = { 0, 2, 1, 0 },
+                buf = buf,
+                mode = "V",
+                indent = "\t",
+            })
+
+            assert.are.same({ "\talpha", "\tbeta" }, lines)
+        end)
+
+        it("prepends space indentation in linewise mode", function()
+            local buf = vim.api.nvim_create_buf(false, true)
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "    line one", "    line two" })
+
+            local lines = replace_translated("alpha\n    beta", {
+                start_pos = { 0, 1, 1, 0 },
+                end_pos = { 0, 2, 1, 0 },
+                buf = buf,
+                mode = "V",
+                indent = "    ",
+            })
+
+            assert.are.same({ "    alpha", "    beta" }, lines)
         end)
     end)
 end)

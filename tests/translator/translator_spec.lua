@@ -95,5 +95,39 @@ describe("translator", function()
             assert.spy(ui.ask_text).called(1)
             assert.spy(api.translate).called(0)
         end)
+
+        it("adds the visual selection indent when replacing", function()
+            local buf = vim.api.nvim_create_buf(false, true)
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "\thello", "\tworld" })
+            local positions = { { 0, 1, 1, 0 }, { 0, 2, 1, 0 } }
+
+            helpers.stash_stub(vim.fn, "visualmode", function()
+                return "V"
+            end)
+            helpers.stash_stub(vim.fn, "getpos", function()
+                return table.remove(positions, 1)
+            end)
+            helpers.stash_stub(vim.fn, "getregion", function()
+                return { "\thello", "\tworld" }
+            end)
+            helpers.stash_stub(vim.api, "nvim_get_current_buf", function()
+                return buf
+            end)
+            helpers.stash_stub(api, "translate", function(_, _, cb)
+                cb("bonjour\n\tmonde")
+            end)
+            helpers.stash_stub(vim, "schedule", function(fn)
+                fn()
+            end)
+
+            translator.translate("fr", nil, {
+                visual_input = true,
+                replace_selection = true,
+                yank_output = false,
+                notify_output = false,
+            })
+
+            assert.are.same({ "\tbonjour", "\tmonde" }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+        end)
     end)
 end)

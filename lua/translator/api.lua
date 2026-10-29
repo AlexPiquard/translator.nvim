@@ -15,7 +15,7 @@ M.translate = function(target_lang, text, success_callback)
         stdout_buffered = true,
         on_exit = function(_, code)
             if code ~= 0 then
-                vim.notify("translator: failed to curl api (code " .. code .. ")", vim.log.levels.ERROR)
+                vim.notify("Translator: Failed to curl api (code " .. code .. ")", vim.log.levels.ERROR)
             end
         end,
         on_stdout = function(_, data)
@@ -24,7 +24,7 @@ M.translate = function(target_lang, text, success_callback)
             end
             local ok, decoded = pcall(vim.json.decode, table.concat(data, "\n"))
             if not ok then
-                vim.notify("translator: invalid api response", vim.log.levels.ERROR)
+                vim.notify("Translator: Invalid api response", vim.log.levels.ERROR)
                 return
             end
             local translated = ""

@@ -1,7 +1,7 @@
 ---@class Ui
 local M = {}
 
----@type {start_pos: [integer, integer, integer, integer], end_pos: [integer, integer, integer, integer], buf: integer, mode: string}|nil
+---@type {start_pos: [integer, integer, integer, integer], end_pos: [integer, integer, integer, integer], buf: integer, mode: string, indent: string}|nil
 M.selection = nil
 
 M.select_visual_text = function()
@@ -22,6 +22,7 @@ M.select_visual_text = function()
         end_pos = end_pos,
         buf = vim.api.nvim_get_current_buf(),
         mode = mode,
+        indent = selected:match("^%s*"),
     }
     return selected
 end
@@ -54,23 +55,23 @@ M.output = function(translated, yank, replace, notify, callback)
 
         local s = M.selection
         if replace and s then
-            local lines = vim.split(translated, "\n", { plain = true })
-            local ok
+            local lines = vim.split(s.indent .. translated, "\n", { plain = true })
+            local err
             if s.mode == "V" then
-                ok = pcall(vim.api.nvim_buf_set_lines, s.buf, s.start_pos[2] - 1, s.end_pos[2], false, lines)
+                _, err = pcall(vim.api.nvim_buf_set_lines, s.buf, s.start_pos[2] - 1, s.end_pos[2], false, lines)
             elseif s.mode == "v" then
-                ok = pcall(
+                _, err = pcall(
                     vim.api.nvim_buf_set_text,
                     s.buf,
                     s.start_pos[2] - 1,
                     s.start_pos[3] - 1,
                     s.end_pos[2] - 1,
-                    s.end_pos[3],
+                    s.end_pos[3] - 1,
                     lines
                 )
             end
-            if not ok then
-                vim.notify("translator: failed to paste translated text in selection", vim.log.levels.ERROR)
+            if err and type(err) == "string" then
+                vim.notify("Translator: Failed to paste translated text in selection: " .. err, vim.log.levels.ERROR)
             end
         end
 
