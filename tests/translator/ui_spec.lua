@@ -26,7 +26,7 @@ describe("translator.ui", function()
 
             local lines = replace_translated("HELLO", {
                 start_pos = { 0, 1, 1, 0 },
-                end_pos = { 0, 1, 6, 0 },
+                end_pos = { 0, 1, 5, 0 },
                 buf = buf,
                 mode = "v",
                 indent = "",
@@ -56,7 +56,7 @@ describe("translator.ui", function()
 
             local lines = replace_translated("RUTHLESS\nCRUEL", {
                 start_pos = { 0, 1, 7, 0 },
-                end_pos = { 0, 2, 14, 0 },
+                end_pos = { 0, 2, 13, 0 },
                 buf = buf,
                 mode = "v",
                 indent = ""
@@ -71,7 +71,7 @@ describe("translator.ui", function()
 
             local lines = replace_translated("TRANSLATED ONE\nTRANSLATED TWO", {
                 start_pos = { 0, 1, 1, 0 },
-                end_pos = { 0, 2, 19, 0 },
+                end_pos = { 0, 2, 18, 0 },
                 buf = buf,
                 mode = "v",
                 indent = ""
