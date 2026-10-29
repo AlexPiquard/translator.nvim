@@ -11,16 +11,30 @@ M.select_visual_text = function()
     end
     local start_pos = vim.fn.getpos("'<")
     local end_pos = vim.fn.getpos("'>")
+
+    local buf = vim.api.nvim_get_current_buf()
+    local line_idx = end_pos[2] - 1
+    local lines = vim.api.nvim_buf_get_lines(buf, line_idx, line_idx + 1, false)
+
+    if #lines > 0 then
+        local current_line = lines[1]
+        local max_col = vim.fn.strchars(current_line)
+
+        if mode == "v" and end_pos[3] > max_col then
+            end_pos[3] = math.max(1, max_col)
+        end
+    end
+
     local ok, selected = pcall(function()
         return table.concat(vim.fn.getregion(start_pos, end_pos, { type = mode }), "\n")
     end)
-    if not ok or #selected < 3 then
+    if not ok or not selected or #selected < 3 then
         return
     end
     M.selection = {
         start_pos = start_pos,
         end_pos = end_pos,
-        buf = vim.api.nvim_get_current_buf(),
+        buf = buf,
         mode = mode,
         indent = selected:match("^%s*"),
     }
@@ -66,7 +80,7 @@ M.output = function(translated, yank, replace, notify, callback)
                     s.start_pos[2] - 1,
                     s.start_pos[3] - 1,
                     s.end_pos[2] - 1,
-                    s.end_pos[3] - 1,
+                    s.end_pos[3],
                     lines
                 )
             end
