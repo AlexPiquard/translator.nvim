@@ -15,7 +15,7 @@ Translate text directly from Neovim using a free public translation endpoint, wi
 
 ## Installation
 
-### lazy.nvim
+[lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
@@ -31,13 +31,26 @@ Translate text directly from Neovim using a free public translation endpoint, wi
 }
 ```
 
-### packer.nvim
+<details>
+<summary><a href="https://neovim.io/doc/user/pack/#vim.pack">vim.pack</a></summary>
 
 ```lua
-use {
-  "AlexPiquard/translator.nvim",
-}
+vim.pack.add({
+  {
+    src = "https://github.com/AlexPiquard/translator.nvim",
+  },
+})
+
+require("translator").setup({
+  -- Opts here
+})
+
+-- Example keybindings
+vim.keymap.set({ "n", "x" }, "<leader>tf", function() require("translator").translate("fr", nil, { replace_selection = true, yank_output = false }) end, { desc = "Translate selection to French, without yanking" })
+vim.keymap.set({ "n", "x", }, "<leader>te", "<cmd>Translate en<cr>", { desc = "Translate to English" })
 ```
+
+</details>
 
 ## Usage
 
