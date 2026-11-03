@@ -1,5 +1,5 @@
 *translator.txt*
-                          For Neovim >= 0.10.0    Last change: 2026 October 29
+                         For Neovim >= 0.10.0    Last change: 2026 November 03
 
 ==============================================================================
 Table of Contents                               *translator-table-of-contents*
@@ -34,8 +34,7 @@ REQUIREMENTS                         *translator-translator.nvim-requirements*
 
 INSTALLATION                         *translator-translator.nvim-installation*
 
-
-LAZY.NVIM ~
+lazy.nvim <https://github.com/folke/lazy.nvim>
 
 >lua
     {
@@ -51,13 +50,22 @@ LAZY.NVIM ~
     }
 <
 
-
-PACKER.NVIM ~
+vim.pack ~
 
 >lua
-    use {
-      "AlexPiquard/translator.nvim",
-    }
+    vim.pack.add({
+      {
+        src = "https://github.com/AlexPiquard/translator.nvim",
+      },
+    })
+
+    require("translator").setup({
+      -- Opts here
+    })
+
+    -- Example keybindings
+    vim.keymap.set({ "n", "x" }, "<leader>tf", function() require("translator").translate("fr", nil, { replace_selection = true, yank_output = false }) end, { desc = "Translate selection to French, without yanking" })
+    vim.keymap.set({ "n", "x", }, "<leader>te", "<cmd>Translate en<cr>", { desc = "Translate to English" })
 <
 
 
